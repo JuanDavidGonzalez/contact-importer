@@ -23,6 +23,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::prefix('contact')->name('contact.')->group(function () {
         Route::get('index', [ContactController::class, 'index'])->name('index');
-        Route::get('import', [ContactController::class, 'import'])->name('import');
+        Route::get('import', [ContactController::class, 'importedFiles'])->name('importedFiles');
+        Route::post('import', [ContactController::class, 'import'])->name('import');
     });
 });

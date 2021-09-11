@@ -239,7 +239,7 @@ return [
         ],
         [
             'text'        => 'Import Contacts',
-            'route'       => 'contact.import',
+            'route'       => 'contact.importedFiles',
             'icon'        => 'fa fa-upload',
         ],
 
