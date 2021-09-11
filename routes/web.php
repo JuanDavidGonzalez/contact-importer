@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', function () {return view('dashboard');})->name('dashboard');
 
     Route::prefix('contact')->name('contact.')->group(function () {
-        Route::get('index', [])->name('index');
+        Route::get('index', [ContactController::class, 'index'])->name('index');
+        Route::get('import', [ContactController::class, 'import'])->name('import');
     });
 });

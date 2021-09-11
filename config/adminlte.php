@@ -233,9 +233,14 @@ return [
 
         // Sidebar items:
         [
-            'text'        => 'Contacts',
-            'url'         => 'admin/pages',
+            'text'        => 'Contact List',
+            'route'         => 'contact.index',
             'icon'        => 'fa fa-users',
+        ],
+        [
+            'text'        => 'Import Contacts',
+            'route'       => 'contact.import',
+            'icon'        => 'fa fa-upload',
         ],
 
     ],
