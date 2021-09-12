@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Contact;
 use App\Models\Franchise;
+use App\Models\ImportedFiles;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +22,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Events\ImportFailed;
 use Maatwebsite\Excel\Validators\Failure;
 
 class ContactsImport implements
@@ -28,16 +30,22 @@ class ContactsImport implements
     SkipsOnError,
     WithHeadingRow,
     WithValidation,
-    SkipsOnFailure,
     WithChunkReading,
     ShouldQueue,
     WithEvents
 {
-    use Importable, SkipsErrors, SkipsFailures, RegistersEventListeners;
+    use Importable, SkipsErrors, RegistersEventListeners;
+
+    public $importedFiles;
+
+    public function __construct(ImportedFiles $importedFiles)
+    {
+        $this->importedFiles = $importedFiles;
+    }
 
     public function model(array $row)
     {
-        $franchise_id = Franchise::getFranchise($row['credit_card_number']);
+        $franchise = Franchise::getFranchise($row['credit_card_number']);
 
         return new Contact([
             'name' => $row['name'],
@@ -47,7 +55,7 @@ class ContactsImport implements
             'credit_card_number' =>  Hash::make($row['credit_card_number']),
             'email' => $row['email'],
             'user_id' => Auth::id(),
-            'franchise_id' => $franchise_id,
+            'franchise_id' => $franchise->id,
             'code' => substr($row['credit_card_number'], -4)
         ]);
     }
@@ -74,13 +82,27 @@ class ContactsImport implements
 
     public static function afterImport(AfterImport $event)
     {
-        Log::debug('***Queue finished update imported file o status success***');
+        Log::debug("***Queue finished update imported file o status success***");
     }
 
     public function onFailure(Failure ...$failure)
     {
-        Log::debug('***Queue Fail update imported file o status Failure***');
+        Log::debug("**Queue Fail update imported file o status Failure***");
+    }
 
+    public function registerEvents(): array
+    {
+        return [
+            ImportFailed::class => function(ImportFailed $event) {
+                $this->importedFiles->update(['state'=>ImportedFiles::FAILURE]);
+                Log::debug("***Queue finished***");
+
+            },
+            AfterImport::class => function(AfterImport $event) {
+                $this->importedFiles->update(['state'=>ImportedFiles::SUCCESS]);
+                Log::debug("***Queue finished***");
+            },
+        ];
     }
 
 }

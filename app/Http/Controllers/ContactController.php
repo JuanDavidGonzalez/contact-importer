@@ -19,7 +19,7 @@ class ContactController extends Controller
 
     public function importedFiles()
     {
-        $files =  ImportedFiles::where('user_id', Auth::id())->paginate(10);
+        $files =  ImportedFiles::where('user_id', Auth::id())->orderBy('id','desc')->paginate(10);
 
         return view('contact.importedFiles', compact('files'));
     }
@@ -35,12 +35,12 @@ class ContactController extends Controller
         $file_name= uniqid().'.'.$file_ext; ;
         $path = $file->storeAs('import', $file_name);
 
-        ImportedFiles::create([
+        $importedFile = ImportedFiles::create([
             'file_name' => $file->getClientOriginalName(),
             'user_id' => Auth::id()
         ]);
 
-        $import = new ContactsImport();
+        $import = new ContactsImport($importedFile);
         $import->import($path);
 
         return redirect()->route('contact.importedFiles')->withStatus('Import in queue, the file status will be update after import finished.');
