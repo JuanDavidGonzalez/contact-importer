@@ -11,13 +11,17 @@ class ImportedFiles extends Model
 
     protected  $fillable = ['file_name', 'state', 'user_id'];
 
+    const PENDING = 1;
+    const FAILURE = 2;
+    const SUCCESS = 3;
+
     public function getStatusAttribute()
     {
-        if($this->state == 1){
+        if($this->state == self::PENDING){
             $st = ['warning', 'Pending'];
-        }elseif($this->state == 2){
+        }elseif($this->state == self::FAILURE){
             $st = ['danger', 'Failure'];
-        }elseif($this->state == 3){
+        }elseif($this->state == self::SUCCESS){
             $st = ['success', 'Success'];
         }else{
             $st = ['default', 'Unknown'];
