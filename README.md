@@ -35,6 +35,10 @@ Users Created:
 - **Email:** user_a@mail.com **Password:** password
 - **Email:** user_ab@mail.com **Password:** password
 
+Create a sesond DB for Test and modify file phpunit.xml file add the name of test DB
+```$xslt
+    <server name="DB_DATABASE" value="contact-importer-test"/
+``` 
 ### Import Files
 To import .csv files is used queued jobs, so to run job is necessary execute:
 
