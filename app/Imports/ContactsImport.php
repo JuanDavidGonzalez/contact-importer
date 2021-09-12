@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Contact;
 use App\Models\Franchise;
 use App\Models\ImportedFiles;
+use App\Rules\LengthNumCreditCardByFranchise;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -66,10 +67,11 @@ class ContactsImport implements
     public function rules(): array
     {
         return [
-            'name' => 'regex:/^[a-zA-Z0-9\-]+$/',
-            'birthday' => 'date',
-            'address' => 'string|max:255',
-            'credit_card_number' => 'numeric',
+            'name' => 'required|regex:/^[a-zA-Z0-9\-]+$/',
+            'phone' => ["required", "regex:/^(^\(\+[0-9]{2}\)\s[0-9]{3}\s[0-9]{3}\s[0-9]{2}\s[0-9]{2}$)|(^\(\+[0-9]{2}\)\s[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$)$/"],
+            'birthday' => 'required|date',
+            'address' => 'required|string|max:255',
+            'credit_card_number' => ['required', new LengthNumCreditCardByFranchise()],
             'email' => Rule::unique('contacts', 'email' )->where('user_id', Auth::id())
         ];
 

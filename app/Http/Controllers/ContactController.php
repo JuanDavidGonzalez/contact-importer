@@ -27,7 +27,7 @@ class ContactController extends Controller
     public function import(Request $request)
     {
         $request->validate([
-            'contactFile' => 'required|file'
+            'contactFile' => 'required|file|mimetypes:text/csv,text/plain'
         ]);
 
         $file = $request->file('contactFile');
