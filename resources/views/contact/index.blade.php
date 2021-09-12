@@ -32,8 +32,8 @@
                             <td>{{$contact->birthday}}</td>
                             <td>{{$contact->phone}}</td>
                             <td>{{$contact->address}}</td>
-                            <td>{{$contact->credit_card_number}}</td>
-                            <td></td>
+                            <td>{{$contact->card}}</td>
+                            <td>{{$contact->franchise->name}}</td>
                             <td>{{$contact->email}}</td>
                         </tr>
                         @empty

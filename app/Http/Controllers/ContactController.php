@@ -11,7 +11,7 @@ class ContactController extends Controller
 {
     public function index()
     {
-        $contacts = Contact::where('user_id', Auth::id())->paginate(2);
+        $contacts = Contact::where('user_id', Auth::id())->paginate(10);
 
         return view('contact.index', compact('contacts'));
     }
@@ -28,8 +28,10 @@ class ContactController extends Controller
             'contactFile' => 'required|file'
         ]);
 
-        (new ContactsImport)->import(request()->file('contactFile'));
+        $file = $request->file('contactFile');
+        $import = new ContactsImport();
+        $import->import($file);
 
-        return redirect()->route('contact.importedFiles')->with('success', 'File imported successfully!');
+        return redirect()->route('contact.importedFiles')->withStatus('File imported successfully!');
     }
 }

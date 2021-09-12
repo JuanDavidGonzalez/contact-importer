@@ -12,9 +12,6 @@
                     <span class="input-group-text">Upload</span>
                 </div>
             </div>
-            @error('contactFile')
-                <span class="text-danger">{{ $message }}</span>
-            @enderror
         </div>
         <div class="col-md-2 text-right mt-auto">
             <button class="btn btn-primary"><i class="fa fa-upload"></i> Import Contacts</button>

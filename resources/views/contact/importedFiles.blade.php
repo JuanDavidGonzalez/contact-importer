@@ -13,6 +13,20 @@
                     <h3 class="card-title">Imported Files</h3>
                 </div>
                 <div class="card-body">
+                    @if(session('status'))
+                        <div class="alert alert-success">
+                                {{session('status')}}
+                        </div>
+                    @endif
+                    @if(isset($errors) && $errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach($errors->all() as $error)
+                                   <li> {{$error}}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     @include('contact.import')
 
                     <div class="row">
