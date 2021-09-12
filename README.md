@@ -7,14 +7,6 @@ them into the platform.
 
 ## Installation Steps
 
-```
-composer install
-
-npm install
-
-npm run dev
-```
-
 Copy .env.example file and change the name to .env, the edit and set de Database config
 ```
 DB_CONNECTION=mysql
@@ -23,6 +15,23 @@ DB_PORT=3306
 DB_DATABASE=laravel
 DB_USERNAME=root
 DB_PASSWORD=
+```
+
+⚠ If Adminltle says the file already exists, say no replace.
+
+```
+composer install
+
+npm install
+
+npm install cross-env
+
+npm run dev
+```
+
+Generate encryption key
+```
+php artisan key:generate
 ```
 
 Run migrations and seeder to create franchises credit-card catalog and two users
