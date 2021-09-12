@@ -49,6 +49,11 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "post-install-cmd": [
+            "@php artisan jetstream:install livewire",
+            "@php artisan adminlte:install",
+            "@php artisan adminlte:plugins install --plugin=bsCustomFileInput"
         ]
     },
     "extra": {
