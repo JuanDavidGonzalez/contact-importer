@@ -10,6 +10,8 @@ class Franchise extends Model
     use HasFactory;
 
     protected $table = 'franchises';
+    protected $fillable = ['name'];
+    public $timestamps = false;
 
     public static function getFranchise($num){
 
@@ -31,7 +33,7 @@ class Franchise extends Model
         elseif (preg_match('/^4[0-9]{6,}$/', $num)){
             $id = 6; //Visa
         }else{
-            return null;
+            return 1;
         }
 
         return $id;

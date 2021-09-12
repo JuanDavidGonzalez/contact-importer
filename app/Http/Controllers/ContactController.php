@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\ContactsImport;
 use App\Models\Contact;
+use App\Models\ImportedFiles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +19,8 @@ class ContactController extends Controller
 
     public function importedFiles()
     {
-        $files = [];
+        $files =  ImportedFiles::where('user_id', Auth::id())->paginate(10);
+
         return view('contact.importedFiles', compact('files'));
     }
 
@@ -29,9 +31,18 @@ class ContactController extends Controller
         ]);
 
         $file = $request->file('contactFile');
-        $import = new ContactsImport();
-        $import->import($file);
+        $file_ext = $file->getClientOriginalExtension();
+        $file_name= uniqid().'.'.$file_ext; ;
+        $path = $file->storeAs('import', $file_name);
 
-        return redirect()->route('contact.importedFiles')->withStatus('File imported successfully!');
+        ImportedFiles::create([
+            'file_name' => $file->getClientOriginalName(),
+            'user_id' => Auth::id()
+        ]);
+
+        $import = new ContactsImport();
+        $import->import($path);
+
+        return redirect()->route('contact.importedFiles')->withStatus('Import in queue, the file status will be update after import finished.');
     }
 }

@@ -42,9 +42,9 @@
                                 <tbody>
                                     @forelse($files as $file)
                                     <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{{$file->file_name}}</td>
+                                        <td>{{$file->created_at}}</td>
+                                        <td class="text-center"><span class="badge bg-{{$file->status[0]}}">{{$file->status[1]}}</span></td>
                                     </tr>
                                     @empty
                                         <tr class="text-center">
@@ -53,6 +53,11 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="card-footer clearfix">
+                            <ul class="pagination pagination-sm m-0 float-right">
+                                {{ $files->links() }}
+                            </ul>
                         </div>
                     </div>
                 </div>

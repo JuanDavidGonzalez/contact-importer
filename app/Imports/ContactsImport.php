@@ -4,19 +4,36 @@ namespace App\Imports;
 
 use App\Models\Contact;
 use App\Models\Franchise;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\SkipsErrors;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Events\AfterImport;
+use Maatwebsite\Excel\Validators\Failure;
 
-class ContactsImport implements ToModel, SkipsOnError, WithHeadingRow, WithValidation
+class ContactsImport implements
+    ToModel,
+    SkipsOnError,
+    WithHeadingRow,
+    WithValidation,
+    SkipsOnFailure,
+    WithChunkReading,
+    ShouldQueue,
+    WithEvents
 {
-    use Importable, SkipsErrors;
+    use Importable, SkipsErrors, SkipsFailures, RegistersEventListeners;
 
     public function model(array $row)
     {
@@ -50,5 +67,20 @@ class ContactsImport implements ToModel, SkipsOnError, WithHeadingRow, WithValid
 
     }
 
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
+
+    public static function afterImport(AfterImport $event)
+    {
+        Log::debug('***Queue finished update imported file o status success***');
+    }
+
+    public function onFailure(Failure ...$failure)
+    {
+        Log::debug('***Queue Fail update imported file o status Failure***');
+
+    }
 
 }
